@@ -1,0 +1,82 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<header>
+    <title>Add Task</title>
+    <script>
+        function combineDateTime() {
+            const dateInput = document.getElementById('dateInput').value;
+            const timeInput = document.getElementById('timeInput').value;
+
+            if (dateInput && timeInput) {
+                const combinedDateTime = dateInput + ' ' + timeInput;
+                document.getElementById('combinedDateTime').value = combinedDateTime;
+            }
+        }
+
+        function setPriority() {
+            const prioritySelect = document.getElementById('prioritySelect');
+            const selectedPriority = prioritySelect.options[prioritySelect.selectedIndex].value;
+            document.getElementById('taskPriority').value = selectedPriority
+
+            prioritySelect.className = '';
+            prioritySelect.classList.add('priority-' + selectedPriority.toLowerCase());
+        }
+
+        function updateSelectColor(select) {
+            var selectedOption = select.options[select.selectedIndex];
+            var selectedClass = selectedOption.className;
+
+            select.className = 'priority-select';
+
+            select.classList.add(selectedClass);
+        }
+    </script>
+</header>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">Add Task</h1>
+        {% if error %}
+            <li  style="color: red;">{{ error }}</li>
+        {% endif %}
+        <form method="post" onsubmit="combineDateTime(); setPriority();">
+        <!-- Task Name -->
+            <label for="taskName">Task Name:</label>
+            <input type="text" id="taskName" name="taskName" required>
+        <!-- Description -->
+            <label for="taskDescription">Description</label>
+            <textarea id="taskDescription" name="taskDescription"></textarea>
+        <!-- Due Date -->
+            <label for="dateInput">Due Date:</label>
+            <input type="date" id="dateInput" name="dueDate" required>
+        <!-- Due Time -->
+            <label for="timeInput">Due Time:</label>
+            <input type="time" id="timeInput" name="dueTime" required>
+
+            <input type="hidden" id="combinedDateTime" name="combinedDateTime">
+        <!-- Status
+            <label for="status">Status:</label>
+            <select class="status-select" name="status" required>
+                <option value="Not Started" class="status-not-started">Not Started</option>
+                <option value="In Progress" class="status-in-progress">In Progress</option>
+                <option value="Completed" class="status-completed">Completed</option>
+            </select> -->
+        <!-- Priority -->
+            <label for="priority">Priority:</label>
+            <select id="prioritySelect" name="priority" class="priority-select" onchange="updateSelectColor(this)">
+                <option value="" selected disabled hidden>Select Priority</option>
+                <option value="Low" class="priority-low">Low</option>
+                <option value="Medium" class="priority-medium">Medium</option>
+                <option value="High" class="priority-high">High</option>
+            </select>
+            <input type="hidden" id="taskPriority" name="taskPriority">
+        <!-- Created At -->
+        <!-- Submit -->
+            <button type="submit">Add Task</button>
+        </form>
+    </div>
+    
+</body>
+
+{% endblock%}

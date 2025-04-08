@@ -1,0 +1,176 @@
+Features:
+- Task Creation: creates task
+- Task Deletion: deletes task
+- Task Update: updates task
+- Task List: lists all tasks
+
+Task Management:
+- Desription
+- title
+- due date
+- priority
+- categorize
+- Notifications/Reminders
+
+Task Table
+|   id (primary key)  | title | Description | due date  | priority
+
+task.html
+- UI of the task app
+- Shows all tasks
+- Usually the main use
+
+app.py
+- Flask app
+- Routes
+- Task creation
+
+tasks.py
+- task class
+- includes title, id, desc, due date, priority
+
+<style>
+    .status-cell {
+        color: white;
+        position: relative;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .status-options {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        z-index: 10;
+    }
+
+    .status-option {
+        padding: 5px;
+        cursor: pointer;
+        color: black;
+    }
+
+    .status-option[data-status="Not Started"] {
+        background-color: #990000;
+    }
+
+    .status-option[data-status="In Progress"] {
+        background-color: #ff9900;
+    }
+
+    .status-option[data-status="Completed"] {
+        background-color: #009900;
+    }
+
+    .status-option:hover {
+        background-color: #f0f0f0;
+        color: black;
+    }
+</style>
+
+<script>
+    function toggleStatusOptions(cell) {
+        var options = cell.querySelector('.status-options');
+        if (options.style.display === 'none' || options.style.display === '') {
+            options.style.display = 'block';
+        } else {
+            options.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('click', function(event) {
+        var isClickInside = event.target.closest('.status-cell');
+        if (!isClickInside) {
+            var statusOptions = document.querySelectorAll('.status-options');
+            statusOptions.forEach(function(options) {
+                options.style.display = 'none';
+            });
+        }
+    });
+
+    document.querySelectorAll('.status-option').forEach(function(option) {
+        option.addEventListener('click', function(event) {
+            var cell = event.target.closest('.status-cell');
+            var statusText = cell.querySelector('.status-text');
+            var newStatus = event.target.getAttribute('data-status');
+            var newColor = event.target.getAttribute('data-color');
+
+            statusText.textContent = newStatus;
+            cell.style.backgroundColor = newColor;
+            cell.style.color = 'white';
+            cell.setAttribute('data-status', newStatus);
+            
+            cell.querySelector('.status-options').style.display = 'none';
+
+            var taskId = cell.getAttribute('data-task-id');
+            updateTaskStatus(taskId, newStatus);
+        });
+    });
+
+    function updateTaskStatus(taskId, status) {
+        fetch(`/update_status/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `status=${encodeURIComponent(status)}`,
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Status updated successfully:', data);
+        })
+        .catch(error => {
+            console.error('Error updating status:', error);
+        });
+    }
+
+    window.onload = function() {
+        document.querySelectorAll('.status-cell').forEach(function(cell) {
+            var status = cell.getAttribute('data-status');
+            console.log('Status:', status);
+            var color;
+            if (status === "Not Started") {
+                color = "#990000";
+            } else if (status === "In Progress") {
+                color = "#ff9900";
+            } else if (status === "Completed") {
+                color = "#009900";
+            }
+            console.log('Color:', color);
+            cell.style.backgroundColor = color;
+            cell.style.color = 'white';
+        });
+        attachStatusOptionClickHandlers();
+    }
+
+    function attachStatusOptionClickHandlers() {
+        document.querySelectorAll('.status-option').forEach(function(option) {
+            option.addEventListener('click', function(event) {
+                var cell = event.target.closest('.status-cell');
+                var statusText = cell.querySelector('.status-text');
+                var newStatus = event.target.getAttribute('data-status');
+                var newColor = event.target.getAttribute('data-color');
+
+                statusText.textContent = newStatus;
+                cell.style.backgroundColor = newColor;
+                cell.style.color = 'white';
+                cell.setAttribute('data-status', newStatus);
+
+                // Hide options after selection
+                cell.querySelector('.status-options').style.display = 'none';
+
+                // Send the updated status to the server
+                var taskId = cell.getAttribute('data-task-id');
+                updateTaskStatus(taskId, newStatus)
+            });
+        });
+    }
+</script>

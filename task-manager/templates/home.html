@@ -1,0 +1,96 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+<table class="container">
+    <thead>
+        <tr>
+            <th onclick="sortTable(0)">Name</th>
+            <th onclick="sortTable(1)">Priority</th>
+            <th onclick="sortTable(2)">Due Date</th>
+            <th onclick="sortTable(3)">Status</th>
+            <th onclick="sortTable(4)">Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="taskTableBody">
+        {% for task in tasks %}
+        <tr>
+            <!-- Task Subject -->
+            <td style="text-align: left">{{ task.task_name }}</td>
+            <!-- Priority -->
+            <td>
+                <form action="{{ url_for('update_task', task_id=task.id) }}" method="post">
+                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                    <select name="priority" {% if task.priority == 'Low' %}class="priority-low"{% elif task.priority == 'Medium' %}class="priority-medium"{% else %}class="priority-high"{% endif %} style="margin: auto" onchange="this.form.submit()"> 
+                        <option value="Low" class="priority-low" {% if task.priority == 'Low' %}selected{% endif %}>Low</option>
+                        <option value="Medium" class="priority-medium" {% if task.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                        <option value="High" class="priority-high" {% if task.priority == 'High' %}selected{% endif %}>High</option>
+                    </select>
+                </form>
+            </td>
+            <!-- Due Date -->
+            <td>
+                {{ task.due_date.strftime('%A, %d %B %Y %I:%M %p') }}
+                <div class="progress-bar">
+                    <div class="progress" style="width: {{ update_progress(task.due_date, task.created) }}%">{{ update_progress(task.due_date, task.created) }}%</div>
+                </div>
+            </td>
+            <td>
+                <!-- Status Options -->
+                <form action="{{ url_for('update_task', task_id=task.id) }}" method="post">
+                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                    <select name="status" {% if task.status == 'Not Started' %} class="status-not-started" {% elif task.status == 'In Progress' %} class="status-in-progress"{% else %} class="status-completed" {% endif %} style="margin: auto" onchange="this.form.submit()">
+                         <option value="Not Started" class="status-not-started" {% if task.status == "Not Started" %}selected{% endif %}>Not Started</option>
+                         <option value="In Progress" class="status-in-progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                         <option value="Completed" class="status-completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                    </select>
+                </form>
+            </td>
+            <td>{{ task.created.strftime('%A, %B %d %Y %I:%M%p') }}</td>
+            <td>
+                <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post" style="display:inline;">
+                    <button type="submit" style="border:none; background:none; cursor:pointer; color:red;">
+                        <img src="{{ url_for('static', filename='images/trash-can-solid.svg') }}" alt="Delete" style="width:20px; height:20px;">
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="6" style="text-align: left">
+                <a class="add-task" href="{{ url_for('add_task') }}" style="text-decoration: none">
+                    <span class="plus-sign">+</span>
+                    <span class="plus-text">Add Task</span>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
+
+<script>
+    function sortTable(columnIndex) {
+        const table = document.getElementById("taskTableBody");
+        const rows = Array.from(table.rows);
+        const sortedRows = rows.sort((a,b) => {
+            const aText = a.cells[columnIndex].innerText.trim();
+            const bText = b.cells[columnIndex].innerText.trim();
+
+            if (columnIndex == 1) {
+                const priorities = { 'Low': 1, 'Medium': 2, 'High': 3};
+                return priorities[aText] - priorities[bText];
+            } else if (columnIndex === 2 || columnIndex === 4) {
+                return new Date(aText) - new Date(bText);
+            } else {
+                return aText.localeCompare(bText);
+            }
+        });
+
+        while (taskTableBody.firstChild) {
+            taskTableBody.removeChild(taskTableBody.firstChild);
+        }
+
+        sortedRows.forEach((row) => taskTableBody.appendChild(row));
+    }
+</script>
