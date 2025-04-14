@@ -9,6 +9,7 @@ Welcome to my GitHub repository! This repository contains projects I have worked
 
 ### Software Development
 - **Task Manager (PyQt5 & Flask)** – Created a task management application with AI-based prioritization.
+![plot](https://github.com/yuuknishida/Projects/blob/master/Screenshot%202025-04-14%20084046.png)
 - **Banking Management System (C++)** – Developed a text-based system using queues and BST for transaction processing.
 - **Graphing Calculator (Python)** – Designed a GUI-based calculator with graphing capabilities.
 - **Chessboard UI (Qt C++)** – Built an interactive chessboard UI using Qt framework.
