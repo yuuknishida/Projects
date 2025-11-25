@@ -48,4 +48,3 @@ ADC readings are filtered using a moving average to reduce noise before PWM adju
 
 ## Learning Focus
 Showcases embedded C modular design, peripheral configuration, and simple signal conditioning techniques.
-

@@ -54,4 +54,3 @@ python src/chessEngine.py
 
 ## Learning Focus
 Illustrates engine integration, event-driven GUI design, and separation of board logic from UI concerns.
-

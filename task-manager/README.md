@@ -42,4 +42,3 @@ Then open the local server URL printed (commonly `http://127.0.0.1:5000/`).
 
 ## Learning Focus
 Demonstrates Python web app structure, template rendering, and simple state management patterns.
-

@@ -31,4 +31,3 @@ For each available move, the algorithm simulates subsequent opponent responses, 
 
 ## Learning Focus
 Demonstrates classic deterministic game search, evaluation heuristics, and clean separation of game mechanics from AI logic.
-

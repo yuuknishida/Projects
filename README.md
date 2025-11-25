@@ -45,4 +45,3 @@ Unless otherwise stated in subfolders, these projects are provided for personal 
 
 ---
 For deeper details, open the specific project README files.
-

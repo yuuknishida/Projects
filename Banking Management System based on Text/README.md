@@ -37,4 +37,3 @@ Accounts and transactions are stored in plain text files (filenames defined in t
 
 ## Learning Focus
 Demonstrates C++ file I/O, custom data structures, and a menu-driven CLI application pattern.
-
